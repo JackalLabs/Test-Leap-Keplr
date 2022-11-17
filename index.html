@@ -1,0 +1,53 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>A Basic HTML5 Template</title>
+  <meta name="description" content="A simple HTML5 Template for new projects.">
+  <meta name="author" content="SitePoint">
+
+  <meta property="og:title" content="A Basic HTML5 Template">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.sitepoint.com/a-basic-html5-template/">
+  <meta property="og:description" content="A simple HTML5 Template for new projects.">
+  <meta property="og:image" content="image.png">
+
+</head>
+
+<body>
+  <!-- your content here... -->
+  <button onclick="exeEnd()">Tests</button>
+  <script>
+    const chainIdent = 'cosmoshub-4'
+    const memo = 'test message'
+
+    async function makeSecret (wallet, acct) {
+      return (await wallet.signArbitrary(chainIdent, acct, memo)).signature
+    }
+
+    async function exeEnd () {
+      if (!window.keplr || !window.leap) {
+          alert("Please install keplr extension");
+      } else {
+          await window.keplr.enable(chainIdent);
+          const keplrOfflineSigner = window.keplr.getOfflineSigner(chainIdent);
+          const keplrAccounts = await keplrOfflineSigner.getAccounts();
+          const keplrSecret = await makeSecret(window.keplr, keplrAccounts[0].address)
+          console.log(keplrSecret)
+
+          await window.leap.enable(chainIdent);
+          const leapOfflineSigner = window.leap.getOfflineSigner(chainIdent);
+          const leapAccounts = await leapOfflineSigner.getAccounts();
+          const leapSecret = await makeSecret(window.leap, leapAccounts[0].address)
+          console.log(leapSecret)
+
+          console.log(keplrSecret===leapSecret)
+      }
+
+    }
+  </script>
+</body>
+</html>
